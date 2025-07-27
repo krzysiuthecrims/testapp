@@ -29,7 +29,7 @@
 <body>
 
   <h1>Scraper ogłoszeń</h1>
-
+  <button onclick="openGarsoLogin()">Zaloguj do Garsoniery</button>
   <label for="searchUrlInput">URL wyszukiwania:</label>
   <input id="searchUrlInput" type="text"
          value="https://pl.escort.club/anonse/towarzyskie/bielsko-biala/?province=24&district=&filter_price_type=&filter_price=0%3B25000&filter_age=18%3B39&filter_weight=30%3B59&filter_height=100%3B220&filter_breasts=3%3B8&breasts_type=&hair_colors=&sexual_orientation=&searchlang=&zodiac_sign=&q=">
@@ -162,6 +162,13 @@
               <button onclick="chgGrp('${phone}','takieSe')">Takie se</button>
               <button onclick="chgGrp('${phone}','czarnaLista')">Czarna lista</button>
               <button onclick="copyToClipboard('${garso}')">Kopiuj</button>
+              <form method="post"
+                    action="https://www.garsoniera.com.pl/forum/index.php?app=core&module=search&do=search&fromMainBar=1"
+                    target="_blank"
+                    style="display:inline">
+                <input type="hidden" name="search_term" value="&quot;${garso}&quot;">
+                <input type="submit" value="GARSO">
+              </form>
             </div>`;
 
           lst.forEach(og=>box.appendChild(createListing(og)));
@@ -197,6 +204,38 @@
       phoneData.groups[phone]=grp;
       saveJsonBin();
       fillResults(groupByPhone(cachedListings));
+    }
+
+    function openGarsoLogin() {
+      // adres logowania
+      const url = "https://www.garsoniera.com.pl/forum/index.php?app=core&module=global&section=login&do=process";
+
+      // tworzymy element <form>
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = url;
+      form.target = "_blank";        // <-- otwórz w nowej karcie
+
+      // pomocnicza funkcja do dodawania ukrytych pól
+      const hidden = (name, value) => {
+        const inp = document.createElement("input");
+        inp.type  = "hidden";
+        inp.name  = name;
+        inp.value = value;
+        form.appendChild(inp);
+      };
+
+      /* ---- pola form‑data --------------------------------- */
+      hidden("ips_username", "btyrlsd1");
+      hidden("ips_password", "abc123!#");
+      hidden("auth_key",     "880ea6a14ea49e853634fbdc5015a024");
+      hidden("referer",      "https://www.garsoniera.com.pl/forum/index.php");
+      /* ----------------------------------------------------- */
+
+      // dodajemy formularz do DOM‑u, wysyłamy, a potem usuwamy
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
     }
 
     /* ------------ INIT ------------ */
