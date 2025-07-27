@@ -27,10 +27,16 @@
     .group-buttons{margin-top:6px}
     .group-buttons button{margin:2px;font-size:.8em;background:#888}
     .group-buttons button:hover{background:#666}
+    .locked { visibility:hidden; }
   </style>
 </head>
 <body>
-
+  <div id="welcome"
+     style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+            background:#000;color:#fff;font-size:24px;text-align:center;user-select:none;z-index:9999;">
+    Jeśli widzisz ten napis,<br/>to znaczy, że serwer działa
+  </div>
+  <div id="mainConatiner" style="visibility:hidden">
   <h1>Scraper ogłoszeń</h1>
   <button onclick="openGarsoLogin()">Zaloguj do Garsoniery</button>
   <label for="searchUrlInput">URL wyszukiwania:</label>
@@ -52,7 +58,7 @@
 
   <h2>Czarna lista</h2>
   <div id="results-czarnaLista" class="rezulty"></div>
-
+    </div>
   <script>
     /* --- konfiguracja --- */
     const apiKey   = "$2a$10$H2X4RpNcSHdXokgP9SNzO.5mY8dOswBrRsGBMJOEec3kLK6tebE1C";
@@ -287,6 +293,28 @@
     saveBtn.addEventListener("click", async()=>{
           await saveJsonBin();
         });
+
+    (function () {
+      var mainCont = document.getElementById('mainConatiner')
+      const overlay   = document.getElementById('welcome');
+      let   clickCnt  = 0;
+      let   timer     = null;          // do resetu klików
+
+      overlay.addEventListener('click', () => {
+        clickCnt++;
+        clearTimeout(timer);
+        timer = setTimeout(() => clickCnt = 0, 800);  // 0,8 s na 3 kliki
+
+        if (clickCnt === 3) {
+          unlockApp();
+        }
+      });
+
+      function unlockApp() {
+        mainCont.style = "visibility:visible"; // odsłoń stronę
+        overlay.remove();                         // usuń powitanie
+      }
+    })();
 
   </script>
 </body>
