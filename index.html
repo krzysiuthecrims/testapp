@@ -174,13 +174,7 @@
               <button onclick="chgGrp('${phone}','czarnaLista')">Czarna lista</button>
               <button onclick="chgGrp('${phone}','nowosci')">Nowości</button>
               <button onclick="copyToClipboard('${garso}')">Kopiuj</button>
-              <form method="post"
-                    action="https://www.garsoniera.com.pl/forum/index.php?app=core&module=search&do=search&fromMainBar=1"
-                    target="_blank"
-                    style="display:inline">
-                <input type="hidden" name="search_term" value="&quot;${garso}&quot;">
-                <input type="submit" value="GARSO">
-              </form>
+              <button onclick="openGarsoSearch('${garso}')">GARSO</button>
             </div>`;
 
           lst.forEach(og=>box.appendChild(createListing(og)));
@@ -267,6 +261,25 @@
       form.submit();
       document.body.removeChild(form);
     }
+
+    function openGarsoSearch(garsoNumber) {
+      const url   = "https://www.garsoniera.com.pl/forum/index.php?app=core&module=search&do=search&fromMainBar=1";
+      const form  = document.createElement("form");
+      form.action = url;
+      form.method = "POST";
+      form.target = "_blank";
+
+      const inp   = document.createElement("input");
+      inp.type="hidden";
+      inp.name="search_term";
+      inp.value=`"${garsoNumber}"`;   // cudzysłowy + myślniki
+      form.appendChild(inp);
+
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+    }
+
 
     /* ------------ INIT ------------ */
     (async()=>{await loadJsonBin();statusEl.textContent="Dane z bazy wczytane";})();
